@@ -1,0 +1,73 @@
+ARG IMAGE_NAME=ubuntu:22.04
+FROM ${IMAGE_NAME}
+
+# id command ---> uid=1000(tishyk) gid=1000(tishyk) groups=1000(tishyk)
+ENV TZ=Asia/Jerusalem
+ENV USERNAME=tishyk
+ENV GROUPNAME=tishyk
+ENV UID=1000
+ENV GID=1000
+ENV WORKSPACE="auto-project"
+
+# Timezone setting is needed to prevent interactive prompt during image setup
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+	&& echo $TZ > /etc/timezone \
+	&& bash -c 'mkdir -p /etc/udev/rules.d \
+			/lib/firmware \
+			/lib/udev/rules.d'
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  build-essential \
+  cmake \
+  gcc-9 \
+  g++-9 \
+  git \
+  curl \
+  gpg-agent \
+  libnotify-dev \
+  openssh-client \
+  sudo \
+  nano \
+  virtualenv \
+  unzip \
+  wget \
+  libcurl4-openssl-dev \
+  pkg-config \
+  apt-utils \
+  software-properties-common
+  
+RUN add-apt-repository ppa:deadsnakes/ppa && apt-get install -y \
+	python3.9-dev \
+	python3-pip \
+	python3-setuptools \
+	python3-virtualenv \
+	python3-pybind11 \
+	python3-gi \
+	python-gi-dev \
+	python3-tk
+  
+RUN python3 -m playwright install
+
+RUN groupadd --gid ${GID} ${GROUPNAME} \
+  && useradd -m -s /bin/bash --gid ${GROUPNAME} -G sudo -u ${UID} ${USERNAME} \
+  && chmod u+w /etc/sudoers \
+  && echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+  && chmod -w /etc/sudoers \
+  && echo "" > /etc/bash.bashrc \
+  && chown -R ${USERNAME}:${GROUPNAME} /home/${USERNAME} \
+  && echo "umask 000" >> /home/${USERNAME}/.bashrc
+
+# after this point all commands being run as ${USERNAME}
+RUN su ${USERNAME}
+RUN mkdir /home/${USERNAME}/${WORKSPACE}
+RUN chown -R ${USERNAME}:${GROUPNAME} /home/$USERNAME/${WORKSPACE}
+
+WORKDIR /home/$USERNAME/${WORKSPACE}
+
+USER ${USERNAME}:${GROUPNAME}
+
+# Banner copy
+COPY .ssh/* /home/$USERNAME/.ssh/
+
+
+CMD /bin/bash

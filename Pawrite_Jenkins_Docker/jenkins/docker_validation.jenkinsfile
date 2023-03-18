@@ -1,0 +1,32 @@
+pipeline {
+    agent { docker  { 
+    	image 'framework_image:2022-12-08'
+	args '-e USER="tishyk"'} }
+    stages {
+        stage('Framework Setup') {
+            steps {
+                sh "chmod +x install.sh && sudo ./install.sh"
+            }
+        }
+        stage('Site 1 Validation') {
+            steps {
+                sh '. playwright_venv/bin/activate && pytest test/test_site1'
+            }
+        }
+		stage('Site 2 Validation') {
+            steps {
+                sh '. playwright_venv/bin/activate && pytest test/test_site2'
+            }
+        }
+        stage('Post actions') {
+            steps {
+                sh 'echo "CleanUp Stage"'
+            }
+        }
+         stage('Send Mail') {
+            steps {
+                sh 'python3 --version'
+            }
+        }
+    }
+}
