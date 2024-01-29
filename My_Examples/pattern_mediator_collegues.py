@@ -84,5 +84,5 @@ if __name__ == "__main__":
     mediator.add(c2)
     mediator.add(c3)
 
-    c1.send("Hi!");
-    c3.send("Hello!");
+    c1.send("Hi!")
+    c3.send("Hello!")

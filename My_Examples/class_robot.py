@@ -36,6 +36,6 @@ droid2.sayHi()
 Robot.howMany()
 print("\nЗдесь роботы могут проделать какую-то работу.\n")
 print("Роботы закончили свою работу. Давайте уничтожим их.")
-# del droid1
-# del droid2
-# Robot.howMany()
+del droid1
+del droid2
+Robot.howMany()
