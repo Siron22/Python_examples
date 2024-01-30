@@ -55,3 +55,29 @@ keyboard.add_hotkey(key_for_clipboard, clipboard_translate)
 print(f'Для захвата области экрана нажимайте {key_for_screencapture}')
 print(f'Для перевода картинки из буфера обмена нажимайте {key_for_clipboard}')
 keyboard.wait()
+
+
+"""
+>>>>>>>>>> INSTALLATION <<<<<<<<<<
+Запускаем консоль.
+Выполняем команды:
+chmod +x ./translator.py
+sudo mkdir /usr/share/pyshared/translator
+sudo cp ./translator.py /usr/share/pyshared/translator/translator.py
+
+Создаем файл translator.desktop со следующим содержимым:
+
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=translator
+#Icon=/usr/share/pyshared/translator/images/icon.png
+Exec=/usr/share/pyshared/translator/translator.py
+Terminal=false
+Categories=Utilities;
+Encoding=UTF-8
+
+
+Выполняем команду:
+sudo cp ./translator.desktop /usr/share/applications/translator.desktop
+"""
